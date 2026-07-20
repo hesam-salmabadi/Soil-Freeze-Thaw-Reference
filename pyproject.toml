@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "softer"
 version = "0.0.1"
-description = "Non-binary in situ soil freeze-thaw and soil moisture reference dataset (SFCC in permittivity-temperature space)."
+description = "Non-binary in situ soil freeze-thaw reference dataset (SFCC in sensor-output-temperature space)."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Hesam Salmabadi" }]
