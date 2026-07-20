@@ -2,7 +2,7 @@
 
 **So**il **F**reeze–**T**haw **Re**ference.
 
-**A non-binary in situ reference dataset of soil freeze–thaw state and soil moisture
+**A non-binary in situ reference dataset of soil freeze–thaw state
 for calibration and validation of remote sensing products.**
 
 SoFTeR automates the permittivity–temperature Soil Freezing Characteristic Curve
