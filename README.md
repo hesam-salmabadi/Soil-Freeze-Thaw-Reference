@@ -13,7 +13,7 @@ from multiple monitoring networks. It produces a harmonized reference dataset in
 which each site–cycle is characterized by continuous freezing probability
 (unfrozen / transitional / frozen), rather than a binary 0 °C threshold, together
 with propagated uncertainty. The dataset is intended for evaluation of satellite
-freeze–thaw and soil moisture products, and is packaged for publication in
+freeze–thaw products, and is packaged for publication in
 *Earth System Science Data* (ESSD).
 
 ## Pipeline
@@ -23,7 +23,7 @@ Raw source records are processed through a configurable pipeline:
 1. **Ingest** — source adapters convert raw sensor outputs to a common schema.
 2. **Preprocess** — raw → effective permittivity (sensor-specific); freeze/thaw
    cycle detection; balanced 0.1 °C temperature binning.
-3. **Model** — SFCC fit in permittivity–temperature space (SciPy TRF, bounded);
+3. **Model** — SFCC fit in permittivity (time or soil moisture)–temperature space (SciPy TRF, bounded);
    block bootstrap; Monte Carlo uncertainty propagation.
 4. **Pool** — Bayesian hierarchical partial pooling of `b` and `T_f`
    (network / site random effects) in PyMC.
