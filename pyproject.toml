@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "softer"
+version = "0.0.1"
+description = "Non-binary in situ soil freeze-thaw and soil moisture reference dataset (SFCC in permittivity-temperature space)."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Hesam Salmabadi" }]
+license = { text = "TBD" }
+dependencies = [
+    "numpy",
+    "scipy>=1.13",
+    "pandas",
+    "xarray",
+    "netCDF4",
+    "pymc>=5",
+    "arviz",
+    "pyyaml",
+    "click",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "black", "jupyterlab"]
+
+[project.scripts]
+softer = "softer.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]

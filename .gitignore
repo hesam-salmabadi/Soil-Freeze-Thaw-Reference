@@ -1,0 +1,17 @@
+# Data (released via Zenodo, not tracked in git)
+data/raw/
+data/interim/
+data/processed/
+*.nc
+*.parquet
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Sampler / cache
+.pymc_cache/
+.pytest_cache/

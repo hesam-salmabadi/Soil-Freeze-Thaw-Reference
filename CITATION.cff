@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "SoFTeR: a non-binary in situ soil freeze-thaw and soil moisture reference dataset"
+message: "If you use this software or dataset, please cite the accompanying ESSD paper."
+type: software
+authors:
+  - family-names: Salmabadi
+    given-names: Hesam
+    orcid: "https://orcid.org/0000-0002-4141-4440"
+references:
+  - type: article
+    title: "In situ monitoring of seasonally frozen ground using soil freezing characteristic curve in permittivity-temperature space"
+    doi: "10.5194/tc-20-1635-2026"
+    year: 2026

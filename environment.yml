@@ -1,0 +1,16 @@
+name: softer
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - numpy
+  - scipy>=1.13
+  - pandas
+  - xarray
+  - netcdf4
+  - pymc>=5
+  - arviz
+  - pyyaml
+  - click
+  - jupyterlab
+  - pip
