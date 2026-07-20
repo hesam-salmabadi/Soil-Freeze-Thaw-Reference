@@ -5,26 +5,31 @@
 **A non-binary in situ reference dataset of soil freeze–thaw state
 for calibration and validation of remote sensing products.**
 
-SoFTeR automates the permittivity–temperature Soil Freezing Characteristic Curve
-(SFCC) framework of Salmabadi et al. (2026, *The Cryosphere*,
+SoFTeR generalizes the Soil Freezing Characteristic Curve (SFCC) framework of
+Salmabadi et al. (2026, *The Cryosphere*,
 [10.5194/tc-20-1635-2026](https://doi.org/10.5194/tc-20-1635-2026)) and applies it
-to heterogeneous in situ soil temperature and permittivity / soil moisture records
-from multiple monitoring networks. It produces a harmonized reference dataset in
-which each site–cycle is characterized by continuous freezing probability
-(unfrozen / transitional / frozen), rather than a binary 0 °C threshold, together
-with propagated uncertainty. The dataset is intended for evaluation of satellite
-freeze–thaw products, and is packaged for publication in
+to heterogeneous in situ soil temperature records paired with the raw output of
+soil-moisture probes — whatever quantity a given sensor reports (permittivity,
+oscillation frequency, count, travel/output time, output period, etc.) — from
+multiple monitoring networks. The SFCC is fit in that sensor-output–versus–temperature
+space rather than being restricted to permittivity. It produces a harmonized
+reference dataset in which each site–cycle is characterized by continuous freezing
+probability (unfrozen / transitional / frozen), rather than a binary 0 °C threshold,
+together with propagated uncertainty. The dataset is intended for evaluation of
+satellite freeze–thaw products, and is packaged for publication in
 *Earth System Science Data* (ESSD).
 
 ## Pipeline
 
 Raw source records are processed through a configurable pipeline:
 
-1. **Ingest** — source adapters convert raw sensor outputs to a common schema.
-2. **Preprocess** — raw → effective permittivity (sensor-specific); freeze/thaw
+1. **Ingest** — source adapters convert raw sensor outputs to a common schema,
+   preserving whatever quantity each probe reports (permittivity, frequency,
+   count, travel/output time, etc.).
+2. **Preprocess** — sensor-specific handling of the raw probe output; freeze/thaw
    cycle detection; balanced 0.1 °C temperature binning.
-3. **Model** — SFCC fit in permittivity (time or soil moisture)–temperature space (SciPy TRF, bounded);
-   block bootstrap; Monte Carlo uncertainty propagation.
+3. **Model** — SFCC fit in sensor-output–versus–temperature space (SciPy TRF,
+   bounded); block bootstrap; Monte Carlo uncertainty propagation.
 4. **Pool** — Bayesian hierarchical partial pooling of `b` and `T_f`
    (network / site random effects) in PyMC.
 5. **Postprocess** — freezing probability and soil-state classification.
