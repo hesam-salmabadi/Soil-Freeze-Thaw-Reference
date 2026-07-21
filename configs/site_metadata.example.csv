@@ -1,0 +1,5 @@
+site_id,sensor,sigma_t
+FM403,TEROS12,0.375
+BT12,HydraProbe,0.5
+CP01,CS616,0.2
+GR01,TEROS12,

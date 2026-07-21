@@ -1,0 +1,24 @@
+# SoFTeR configuration — freeze/thaw preprocessing step.
+# Values here are constant across all sites. Per-site facts (e.g. sigma_t) live
+# in the site-metadata CSV instead.
+
+cycle_detection:
+  year_start: "08-01"     # freezing year runs from this date to the next year's
+  min_duration: "2D"      # freeze/thaw legs shorter than this are absorbed
+  max_gap: "2D"           # a cycle never spans a data gap longer than this
+  # deadband half-width h = 2 * sigma_t is taken from the site metadata.
+
+usability:
+  # Temperature-axis coverage gate — the real "can we fit a curve" test.
+  warm_edge: 2.0          # top of the transition band we require coverage across
+  cold_edge: -2.0         # deepest we check for holes; below this, gaps are ignored
+  min_reach: -1.0         # a cycle must reach at least this cold, else flagged shallow
+  max_temp_gap: 0.5       # largest allowed hole (degC) along the temperature axis
+  value_col: null         # if set, points must also have this column non-NaN
+
+coverage:
+  # Time-axis diagnostics (flags, not hard rejects).
+  critical_window: { start: "10-01", end: "03-01" }   # Oct 1 -> Mar 1
+  min_coverage: 0.80      # >=80% of the critical window should have data
+  max_gap: "21D"          # longest tolerable continuous outage in the window
+  action: "flag"          # keep unusable site-years and flag them; never drop
