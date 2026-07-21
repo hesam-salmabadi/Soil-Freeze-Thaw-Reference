@@ -8,8 +8,9 @@ lives in the YAML config instead (:mod:`softer.config`).
 Expected CSV columns (extra columns are preserved and ignored here):
     site_id, sensor, sigma_t
 
-If a site row omits ``sigma_t``, it falls back to the sensor's default from the
-:mod:`softer.sensors` registry.
+``sigma_t`` is the single source of truth for the deadband. If a site row leaves
+it blank, :func:`get_sigma_t` returns ``None`` and the caller falls back to the
+configured ``default_deadband``.
 """
 
 from __future__ import annotations
@@ -17,8 +18,6 @@ from __future__ import annotations
 import math
 
 import pandas as pd
-
-from .sensors import get_sigma_t as _sensor_sigma_t
 
 
 def load_site_metadata(path: str) -> pd.DataFrame:
@@ -33,20 +32,17 @@ def load_site_metadata(path: str) -> pd.DataFrame:
     return meta
 
 
-def get_sigma_t(meta: pd.DataFrame, site_id: str) -> float:
-    """Return sigma_t for a site: explicit value if present, else the sensor default."""
+def get_sigma_t(meta: pd.DataFrame, site_id: str) -> float | None:
+    """Return the site's ``sigma_t`` from metadata, or ``None`` if it is blank.
+
+    A ``None`` result signals the caller to use the configured default deadband.
+    """
     if site_id not in meta.index:
         raise KeyError(f"Site {site_id!r} not found in metadata.")
-    row = meta.loc[site_id]
 
-    sigma = row.get("sigma_t") if hasattr(row, "get") else None
-    if sigma is not None and not (isinstance(sigma, float) and math.isnan(sigma)):
-        return float(sigma)
-
-    sensor = row.get("sensor") if hasattr(row, "get") else None
-    if sensor is not None and not (isinstance(sensor, float) and math.isnan(sensor)):
-        return _sensor_sigma_t(str(sensor))
-
-    raise ValueError(
-        f"Site {site_id!r} has neither a sigma_t value nor a known sensor to fall back on."
-    )
+    if "sigma_t" not in meta.columns:
+        return None
+    sigma = meta.loc[site_id, "sigma_t"]
+    if sigma is None or (isinstance(sigma, float) and math.isnan(sigma)):
+        return None
+    return float(sigma)

@@ -1,8 +1,5 @@
 """Tests for config and site-metadata loaders."""
 
-import math
-
-import pandas as pd
 import pytest
 
 from softer.config import load_config
@@ -13,6 +10,7 @@ def test_load_example_config():
     cfg = load_config("configs/config.example.yaml")
     assert cfg.cycle_detection.year_start == (8, 1)
     assert cfg.cycle_detection.min_duration == "2D"
+    assert cfg.cycle_detection.default_deadband == 0.75
     assert cfg.usability.warm_edge == 2.0
     assert cfg.usability.cold_edge == -2.0
     assert cfg.usability.min_reach == -1.0
@@ -36,13 +34,12 @@ def test_config_defaults_and_unknown_key(tmp_path):
         load_config(str(bad))
 
 
-def test_metadata_sigma_and_sensor_fallback():
+def test_metadata_sigma_present_and_blank():
     meta = load_site_metadata("configs/site_metadata.example.csv")
     # Explicit sigma_t.
     assert get_sigma_t(meta, "FM403") == 0.375
-    # Missing sigma_t falls back to the sensor default (TEROS12).
-    gr = get_sigma_t(meta, "GR01")
-    assert isinstance(gr, float) and not math.isnan(gr)
+    # Blank sigma_t -> None, signalling the caller to use the default deadband.
+    assert get_sigma_t(meta, "GR01") is None
 
 
 def test_metadata_missing_site():

@@ -40,8 +40,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from ..sensors import get_sigma_t
-
 # cycle_phase / cycle_id sentinels.
 FREEZING = 1
 THAWING = 0
@@ -57,23 +55,20 @@ _DEGENERATE_EPS = 1e-6
 
 
 def _resolve_deadband(
-    deadband_c: float | None, sigma_t: float | None, sensor: str | None
+    deadband_c: float | None, sigma_t: float | None, default_deadband: float
 ) -> float:
     """Resolve the deadband half-width h (degC).
 
-    Priority: ``deadband_c`` > ``2 * sigma_t`` > ``2 * sigma_t(sensor)``.
+    Priority: an explicit ``deadband_c`` wins; otherwise ``2 * sigma_t`` (the paper's
+    +/-2*sigma_t rule, with sigma_t coming from the site metadata); otherwise the
+    configured ``default_deadband`` fallback for sites that have no sigma_t.
     """
     if deadband_c is not None:
         h = float(deadband_c)
     elif sigma_t is not None:
         h = 2.0 * float(sigma_t)
-    elif sensor is not None:
-        h = 2.0 * get_sigma_t(sensor)
     else:
-        raise ValueError(
-            "Provide one of deadband_c, sigma_t, or sensor to set the "
-            "near-zero deadband used for cycle detection."
-        )
+        h = float(default_deadband)
     if h < 0:
         raise ValueError(f"Deadband half-width must be non-negative, got {h}.")
     return h
@@ -264,7 +259,7 @@ def label_freeze_thaw_cycles(
     time_col: str | None = None,
     sigma_t: float | None = None,
     deadband_c: float | None = None,
-    sensor: str | None = None,
+    default_deadband: float = 0.75,
     year_start: tuple[int, int] = (8, 1),
     max_gap: str | pd.Timedelta | None = "2D",
     min_duration: str | pd.Timedelta | None = "2D",
@@ -275,9 +270,10 @@ def label_freeze_thaw_cycles(
     ----------
     df, temp_col, time_col:
         Input frame and the columns used. Non-temperature columns pass through.
-    sigma_t, deadband_c, sensor:
-        Set the deadband half-width h (priority: deadband_c > 2*sigma_t >
-        2*sigma_t(sensor)). In production, sigma_t comes from per-site metadata.
+    sigma_t, deadband_c, default_deadband:
+        Set the deadband half-width h. Priority: deadband_c > 2*sigma_t >
+        default_deadband. In production, sigma_t comes from per-site metadata; the
+        default_deadband is used only for sites with no sigma_t.
     year_start:
         ``(month, day)`` start of the freezing year (default Aug 1).
     max_gap:
@@ -292,7 +288,7 @@ def label_freeze_thaw_cycles(
         ``cycle_phase`` and ``year_status`` columns added. ``df.attrs["years"]``
         holds per-year diagnostics.
     """
-    h = _resolve_deadband(deadband_c, sigma_t, sensor)
+    h = _resolve_deadband(deadband_c, sigma_t, default_deadband)
     max_gap_td = pd.Timedelta(max_gap) if max_gap is not None else None
     min_dur_td = pd.Timedelta(min_duration) if min_duration is not None else None
     work = _as_sorted_datetime_frame(df, temp_col, time_col)

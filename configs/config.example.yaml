@@ -6,7 +6,8 @@ cycle_detection:
   year_start: "08-01"     # freezing year runs from this date to the next year's
   min_duration: "2D"      # freeze/thaw legs shorter than this are absorbed
   max_gap: "2D"           # a cycle never spans a data gap longer than this
-  # deadband half-width h = 2 * sigma_t is taken from the site metadata.
+  # Deadband half-width h = 2 * sigma_t, with sigma_t read from the site metadata.
+  default_deadband: 0.75  # fallback h (degC) for sites with no sigma_t in metadata
 
 usability:
   # Temperature-axis coverage gate — the real "can we fit a curve" test.

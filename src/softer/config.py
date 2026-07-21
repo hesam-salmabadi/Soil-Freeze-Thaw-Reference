@@ -30,15 +30,20 @@ class CycleDetectionConfig:
     year_start: tuple[int, int] = (8, 1)
     min_duration: str = "2D"
     max_gap: str = "2D"
+    default_deadband: float = 0.75
 
     @classmethod
     def from_dict(cls, data: dict) -> "CycleDetectionConfig":
-        _reject_unknown(cls.__name__, data, {"year_start", "min_duration", "max_gap"})
+        _reject_unknown(
+            cls.__name__, data,
+            {"year_start", "min_duration", "max_gap", "default_deadband"},
+        )
         base = cls()
         return cls(
             year_start=_month_day(data.get("year_start", base.year_start)),
             min_duration=data.get("min_duration", base.min_duration),
             max_gap=data.get("max_gap", base.max_gap),
+            default_deadband=float(data.get("default_deadband", base.default_deadband)),
         )
 
 

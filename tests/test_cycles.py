@@ -136,7 +136,14 @@ def test_cycle_does_not_span_large_gap():
         assert (span.max() - span.min()) <= pd.Timedelta("2D")
 
 
-def test_deadband_from_sensor():
+def test_deadband_from_sigma_t():
     temps = [5, 2, -2, -6, -2, 2, 5]
-    out = label_freeze_thaw_cycles(_frame(temps), temp_col="Temp", sensor="TEROS12")
+    out = label_freeze_thaw_cycles(_frame(temps), temp_col="Temp", sigma_t=0.375)
+    assert {"cycle_id", "cycle_phase"}.issubset(out.columns)
+
+
+def test_deadband_falls_back_to_default():
+    # No sigma_t and no deadband_c -> uses default_deadband, no error.
+    temps = [5, 2, -2, -6, -2, 2, 5]
+    out = label_freeze_thaw_cycles(_frame(temps), temp_col="Temp", default_deadband=0.75)
     assert {"cycle_id", "cycle_phase"}.issubset(out.columns)
