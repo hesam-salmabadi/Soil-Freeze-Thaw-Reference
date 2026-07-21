@@ -7,7 +7,7 @@ output, effective permittivity, ...) rides along untouched. No interpolation is
 performed — detection works on the available samples, so the method is
 insensitive to occasional missing data.
 
-Core method (unchanged from the author's original workflow):
+Core method:
     Each reading is classified against the deadband h (= 2*sigma_t):
         warm  (T > +h),  cold  (T < -h),  neutral (|T| <= h).
     A *freezing* cycle is a warm block followed by a cold block (the soil truly
